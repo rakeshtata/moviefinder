@@ -1,25 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState,useEffect} from 'react'
+import SearchForm from './Components/SearchForm'
+import MovieResults from './Components/MovieResults'
+import SearchMovies from './service'
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const [movie,setMovie] = useState()
+  const [movies,setMovies] = useState([])
+
+  useEffect(() => {
+    if(movie) {
+      SearchMovies({"title":movie.title}).then((res)=> {
+        setMovies(res)
+      }).catch((err) => {
+        console.log(err)
+        setMovies([])
+      })
+    }
+  },[movie])
+
+  return(
+    <div>
+      <SearchForm setMovie={setMovie}/>
+      {movies && movies.length !== 0 && <MovieResults movies={movies} />}
+      
     </div>
-  );
+  )
 }
 
-export default App;
+export default App; 
